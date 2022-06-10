@@ -1,6 +1,12 @@
 import { ThemeProvider } from "styled-components";
 import { createGlobalStyle } from "styled-components";
 
+import Layout from "../componentes/Layout";
+
+import { config } from "@fortawesome/fontawesome-svg-core";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+config.autoAddCss = false;
+
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
@@ -19,6 +25,7 @@ const GlobalStyle = createGlobalStyle`
 const theme = {
   colors: {
     primary: "#f73f01",
+    secondary: "#777",
   },
 };
 
@@ -27,7 +34,9 @@ function MyApp({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ThemeProvider>
     </>
   );

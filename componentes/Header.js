@@ -18,13 +18,18 @@ export default function Header() {
               <Link href={"/"}>Home</Link>
             </MenuItem>
             <MenuItem>
-              <Link href={"/"}>Sobre</Link>
+              <Link href={"/sobre"}>Sobre</Link>
             </MenuItem>
             <MenuItem>
               <Link href={"/carinho"}>
-                  <a>
-                  <Image src={Carinho} width={52} height={52} alt="carinho de compras" />
-                  </a>
+                <a>
+                  <Image
+                    src={Carinho}
+                    width={52}
+                    height={52}
+                    alt="carinho de compras"
+                  />
+                </a>
               </Link>
             </MenuItem>
           </MenuList>
@@ -35,7 +40,7 @@ export default function Header() {
 }
 
 const StyledHeader = styled.header`
-    margin: 1.87rem 0 3.125rem 0;
+  margin: 1.87rem 0 3.125rem 0;
 `;
 
 const NavBar = styled.nav`
@@ -46,23 +51,23 @@ const NavBar = styled.nav`
 `;
 
 const MenuList = styled.ul`
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
 `;
 
 const MenuItem = styled.li`
-    font-size: 16px;
-    font-weight: 700;
-    a{
-        text-decoration: none;
-        color: #000;
-        transition: 0.3s all ease;
-    }
-    a:hover{
-        color: ${({theme})=> theme.colors.primary};
-    }
+  font-size: 16px;
+  font-weight: 700;
+  a {
+    text-decoration: none;
+    color: #000;
+    transition: 0.3s all ease;
+  }
+  a:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `;
