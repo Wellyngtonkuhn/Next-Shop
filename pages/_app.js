@@ -1,6 +1,6 @@
 import { ThemeProvider } from "styled-components";
 import { createGlobalStyle } from "styled-components";
-
+import CarrinhoContextProvider from "../context/CarrinhoContext"
 import Layout from "../componentes/Layout";
 
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -34,9 +34,11 @@ function MyApp({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <CarrinhoContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </CarrinhoContextProvider>
       </ThemeProvider>
     </>
   );

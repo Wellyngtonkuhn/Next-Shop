@@ -1,9 +1,13 @@
+import { useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
+
 import Banner from "../../componentes/Banner";
 import { container } from "../../styles/utils";
 
 import banner from "../../public/imagens/BANNER02.png";
+
+import { CarrinhoContext } from "../../context/CarrinhoContext";
 
 export const getServerSideProps = async (ctx) => {
   const id = ctx.params.produtoId;
@@ -29,6 +33,13 @@ export const getServerSideProps = async (ctx) => {
 };
 
 export default function ProdutosId({ produto }) {
+
+    const { addProdutos } = useContext(CarrinhoContext)
+
+    const addProdutoCarrinho = (produto) => {
+        addProdutos(produto)
+    }
+
   return (
     <>
       <ProdutoContainer>
@@ -50,7 +61,7 @@ export default function ProdutosId({ produto }) {
               10x de {produto.precoDividido} sem juros
             </Produtodivisao>
 
-            <Button>Adicionar ao carrinho</Button>
+            <Button onClick={() => addProdutoCarrinho(produto)}>Adicionar ao carrinho</Button>
             <PrudutoDescrição>{produto.descricao}</PrudutoDescrição>
           </div>
         </ProdutoDetalhe>
@@ -59,7 +70,9 @@ export default function ProdutosId({ produto }) {
           <span>Inf</span>ormações do produto
         </ProdutoSumarioTitle>
 
-        <Sumario>{produto.sumario}</Sumario>
+        <Sumario>
+            {produto.sumario}
+        </Sumario>
       </ProdutoContainer>
     </>
   );
@@ -132,4 +145,6 @@ const ProdutoSumarioTitle = styled.p`
 `;
 const Sumario = styled.div`
   min-height: 800px;
+  font-weight: 300;
+  font-size: .875rem;
 `;
