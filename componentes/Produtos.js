@@ -15,7 +15,7 @@ export default function Produto({ produtos }) {
           {produtos &&
             produtos.map((produtos) => (
               <ProdutoItem key={produtos._id}>
-                <Link href="/">
+                <Link href={`/produtos/${produtos._id}`}>
                   <a>
                     <Image
                       src={produtos.image}
