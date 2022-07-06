@@ -1,34 +1,32 @@
-import { createContext } from "react"
+import { createContext } from "react";
 
-export const CarrinhoContext = createContext({  })
+export const CarrinhoContext = createContext({});
 
+export default function CarrinhoContextProvider({ children }) {
+  const isBrowser = typeof window !== "undefined";
+  const SESSSION_STORAGE = "produtos";
 
-export default function CarrinhoContextProvider( { children }){
-
-    const isBrowser = typeof window !== 'undefined'
-    const SESSSION_STORAGE = 'produtos'
-
-    const addProdutos = (produto) => {
-        const produtos = getProdutos()
-        produtos.push(produto)
-        if(isBrowser){
-            sessionStorage.setItem(SESSSION_STORAGE, JSON.stringify(produtos))
-        }
+  const addProdutos = (produto) => {
+    const produtos = getProdutos();
+    produtos.push(produto);
+    if (isBrowser) {
+      sessionStorage.setItem(SESSSION_STORAGE, JSON.stringify(produtos));
     }
+  };
 
-    const getProdutos = () => {
-        if(isBrowser){
-            const produtos = sessionStorage.getItem(SESSSION_STORAGE)
-            return produtos ? JSON.parse(produtos) : []
-        }
-        return []
+  const getProdutos = () => {
+    if (isBrowser) {
+      const produtos = sessionStorage.getItem(SESSSION_STORAGE);
+      return produtos ? JSON.parse(produtos) : [];
     }
+    return [];
+  };
 
-    return(
-        <>
-            <CarrinhoContext.Provider value={{addProdutos, getProdutos}}>
-                { children }
-            </CarrinhoContext.Provider>
-        </>
-    )
+  return (
+    <>
+      <CarrinhoContext.Provider value={{ addProdutos, getProdutos }}>
+        {children}
+      </CarrinhoContext.Provider>
+    </>
+  );
 }

@@ -21,7 +21,7 @@ export default function Header() {
               <Link href={"/sobre"}>Sobre</Link>
             </MenuItem>
             <MenuItem>
-              <Link href={"/carinho"}>
+              <Link href={"/carrinho"}>
                 <a>
                   <Image
                     src={Carinho}
