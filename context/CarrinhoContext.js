@@ -49,9 +49,15 @@ export default function CarrinhoContextProvider({ children }) {
     return (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })).format(Frete);
   }
 
+  const limparStorage = () => {
+    if(isBrowser){
+      sessionStorage.clear()
+    }
+  }
+
   return (
     <>
-      <CarrinhoContext.Provider value={{ addProdutos, getProdutos, deletarProduto, valorTotalProduto, valorTotal, freteValor }}>
+      <CarrinhoContext.Provider value={{ addProdutos, getProdutos, deletarProduto, valorTotalProduto, valorTotal, freteValor, limparStorage }}>
         {children}
       </CarrinhoContext.Provider>
     </>

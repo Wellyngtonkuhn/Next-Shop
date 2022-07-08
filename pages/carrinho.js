@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-
+import { useRouter } from 'next/router'
 import Image from "next/image";
 
 import { CarrinhoContext } from "../context/CarrinhoContext.js";
@@ -17,19 +17,72 @@ export default function Carrinho() {
     valorTotalProduto,
     valorTotal,
     freteValor,
+    limparStorage
   } = useContext(CarrinhoContext);
+
   const [produtos, setProdutos] = useState([]);
   const [recarregar, setRecarregar] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter()
 
   useEffect(() => {
     const values = getProdutos();
     setProdutos(values);
-    console.log(produtos);
   }, [recarregar]);
 
   const deletar = (id) => {
     deletarProduto(id);
     setRecarregar((oldValue) => oldValue + 1);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const api = "https://api-teste-123.herokuapp.com";
+    const token = await getTokenLogin(api, email, password);
+    if(!token){
+      console.log('login invalido')
+      return
+    }
+
+    const produtosId = []
+    produtos.map(produto => produtosId.push(produto._id))
+    const venda = await venderProduto(api, token, produtosId)
+    if(!venda){
+      console.log('compra invalido')
+      return
+    }
+    console.log('Compra bem finalizada')
+    limparStorage()
+    router.push('/conclusao')
+  };
+
+  const getTokenLogin = async (api, email, token) => {
+    const result = await fetch(`${api}/login`, {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+      headers: { "Content-type": "application/json" },
+    });
+    if (result.status !== 200) {
+      return null;
+    }
+    const { token } = await result.json();
+    return token;
+  };
+
+  const venderProduto = async (api, token, produtos) => {
+    const result = await fetch(`${api}/produtos/vendas`, {
+      method: "POST",
+      body: JSON.stringify({ produtos }),
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (result.status !== 200) {
+      return null;
+    }
+    return 'sucess';
   };
 
   return produtos && produtos.length > 0 ? (
@@ -78,13 +131,23 @@ export default function Carrinho() {
             <LoginTitle>2. Login</LoginTitle>
             <InputGroup>
               <span>E-MAIL:</span>
-              <input type="text" />
+              <input
+                type="text"
+                value={email || ""}
+                onChange={(e) => setEmail(e.currentTarget.value)}
+              />
             </InputGroup>
             <InputGroup>
               <span>SENHA:</span>
-              <input type="password" />
+              <input
+                type="password"
+                value={password || ""}
+                onChange={(e) => setPassword(e.currentTarget.value)}
+              />
             </InputGroup>
-            <Button>Entrar</Button>
+            <Button type="submit" onClick={handleSubmit}>
+              Entrar
+            </Button>
           </ShoppingCartPayment>
         </section>
       </ShoppingCartContainer>
