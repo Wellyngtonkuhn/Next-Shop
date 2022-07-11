@@ -2,6 +2,9 @@ import { useContext } from "react";
 import styled from "styled-components";
 import Image from "next/image";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Banner from "../../componentes/Banner";
 import { container } from "../../styles/utils";
 
@@ -33,12 +36,15 @@ export const getServerSideProps = async (ctx) => {
 };
 
 export default function ProdutosId({ produto }) {
+  const { addProdutos } = useContext(CarrinhoContext);
 
-    const { addProdutos } = useContext(CarrinhoContext)
-
-    const addProdutoCarrinho = (produto) => {
-        addProdutos(produto)
-    }
+  const addProdutoCarrinho = (produto) => {
+    toast.success("Produto Adicionado no Carrinho", {
+      position: "bottom-right",
+      autoClose: 3000,
+    });
+    addProdutos(produto);
+  };
 
   return (
     <>
@@ -61,7 +67,9 @@ export default function ProdutosId({ produto }) {
               10x de {produto.precoDividido} sem juros
             </Produtodivisao>
 
-            <Button onClick={() => addProdutoCarrinho(produto)}>Adicionar ao carrinho</Button>
+            <Button onClick={() => addProdutoCarrinho(produto)}>
+              Adicionar ao carrinho
+            </Button>
             <PrudutoDescrição>{produto.descricao}</PrudutoDescrição>
           </div>
         </ProdutoDetalhe>
@@ -70,15 +78,12 @@ export default function ProdutosId({ produto }) {
           <span>Inf</span>ormações do produto
         </ProdutoSumarioTitle>
 
-        <Sumario>
-            {produto.sumario}
-        </Sumario>
+        <Sumario>{produto.sumario}</Sumario>
       </ProdutoContainer>
+      <ToastContainer />
     </>
   );
 }
-
-
 
 const ProdutoContainer = styled.main`
   ${container};
@@ -148,5 +153,5 @@ const ProdutoSumarioTitle = styled.p`
 const Sumario = styled.div`
   min-height: 800px;
   font-weight: 300;
-  font-size: .875rem;
+  font-size: 0.875rem;
 `;

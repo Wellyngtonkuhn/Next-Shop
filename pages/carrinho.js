@@ -1,8 +1,11 @@
 import { useContext, useEffect, useState } from "react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import Image from "next/image";
 
 import { CarrinhoContext } from "../context/CarrinhoContext.js";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -17,14 +20,14 @@ export default function Carrinho() {
     valorTotalProduto,
     valorTotal,
     freteValor,
-    limparStorage
+    limparStorage,
   } = useContext(CarrinhoContext);
 
   const [produtos, setProdutos] = useState([]);
   const [recarregar, setRecarregar] = useState(0);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const values = getProdutos();
@@ -32,6 +35,10 @@ export default function Carrinho() {
   }, [recarregar]);
 
   const deletar = (id) => {
+    toast.success("Produto Removido do Carrinho", {
+      position: "bottom-right",
+      autoClose: 3000,
+    });
     deletarProduto(id);
     setRecarregar((oldValue) => oldValue + 1);
   };
@@ -40,21 +47,29 @@ export default function Carrinho() {
     event.preventDefault();
     const api = "https://api-teste-123.herokuapp.com";
     const token = await getTokenLogin(api, email, password);
-    if(!token){
-      console.log('login invalido')
-      return
+    if (!token) {
+      toast.error("Login inválido", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      return;
     }
 
-    const produtosId = []
-    produtos.map(produto => produtosId.push(produto._id))
-    const venda = await venderProduto(api, token, produtosId)
-    if(!venda){
-      console.log('compra invalido')
-      return
+    const produtosId = [];
+    produtos.map((produto) => produtosId.push(produto._id));
+    const venda = await venderProduto(api, token, produtosId);
+    if (!venda) {
+      toast.error("Compra inválido", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      return;
     }
-    console.log('Compra bem finalizada')
-    limparStorage()
-    router.push('/conclusao')
+   toast.success("Compra Finalizada com Sucesso", {
+      position: "bottom-right",
+      autoClose: 3000,
+    });mparStorage();
+    router.push("/conclusao");
   };
 
   const getTokenLogin = async (api, email, token) => {
@@ -76,86 +91,92 @@ export default function Carrinho() {
       body: JSON.stringify({ produtos }),
       headers: {
         "Content-type": "application/json",
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
     if (result.status !== 200) {
       return null;
     }
-    return 'sucess';
+    return "sucess";
   };
 
   return produtos && produtos.length > 0 ? (
-    <Main>
-      <Title>Tem Produto</Title>
-      <SubTitle>Produtos</SubTitle>
-      <ShoppingCartContainer>
-        <ShoppingCartProducts>
-          <Separator></Separator>
-          {produtos &&
-            produtos.map((produto, index) => (
-              <div key={index}>
-                <ButtonContainer>
-                  <button onClick={() => deletar(produto._id)}>
-                    <DeleteIcon icon={faX}></DeleteIcon>
-                  </button>
-                </ButtonContainer>
-                <Product>
-                  <Image
-                    src={produto.image}
-                    width={200}
-                    height={200}
-                    alt={produto.nome}
-                  />
-                  <ProductName>{produto.nome}</ProductName>
-                  <ProductPrice>{produto.formattedPrice}</ProductPrice>
-                </Product>
-                <Separator></Separator>
-              </div>
-            ))}
-        </ShoppingCartProducts>
-        <section>
-          <ShoppingCartPayment>
-            <PaymentTitle>1. Resumo do pedido</PaymentTitle>
-            <PaymentValue>
-              <span>{produtos.length} Produtos</span>{" "}
-              <span>{valorTotalProduto()}</span>
-            </PaymentValue>
-            <PaymentShipping>
-              <span>Frete</span> <span>{freteValor()}</span>
-            </PaymentShipping>
-            <PaymentTotal>
-              <span>Total</span> <span>{valorTotal()}</span>
-            </PaymentTotal>
+    <>
+      <Main>
+        <Title>Tem Produto</Title>
+        <SubTitle>Produtos</SubTitle>
+        <ShoppingCartContainer>
+          <ShoppingCartProducts>
             <Separator></Separator>
-            <LoginTitle>2. Login</LoginTitle>
-            <InputGroup>
-              <span>E-MAIL:</span>
-              <input
-                type="text"
-                value={email || ""}
-                onChange={(e) => setEmail(e.currentTarget.value)}
-              />
-            </InputGroup>
-            <InputGroup>
-              <span>SENHA:</span>
-              <input
-                type="password"
-                value={password || ""}
-                onChange={(e) => setPassword(e.currentTarget.value)}
-              />
-            </InputGroup>
-            <Button type="submit" onClick={handleSubmit}>
-              Entrar
-            </Button>
-          </ShoppingCartPayment>
-        </section>
-      </ShoppingCartContainer>
-    </Main>
+            {produtos &&
+              produtos.map((produto, index) => (
+                <div key={index}>
+                  <ButtonContainer>
+                    <button onClick={() => deletar(produto._id)}>
+                      <DeleteIcon icon={faX}></DeleteIcon>
+                    </button>
+                  </ButtonContainer>
+                  <Product>
+                    <Image
+                      src={produto.image}
+                      width={200}
+                      height={200}
+                      alt={produto.nome}
+                    />
+                    <ProductName>{produto.nome}</ProductName>
+                    <ProductPrice>{produto.formattedPrice}</ProductPrice>
+                  </Product>
+                  <Separator></Separator>
+                </div>
+              ))}
+          </ShoppingCartProducts>
+          <section>
+            <ShoppingCartPayment>
+              <PaymentTitle>1. Resumo do pedido</PaymentTitle>
+              <PaymentValue>
+                <span>{produtos.length} Produtos</span>{" "}
+                <span>{valorTotalProduto()}</span>
+              </PaymentValue>
+              <PaymentShipping>
+                <span>Frete</span> <span>{freteValor()}</span>
+              </PaymentShipping>
+              <PaymentTotal>
+                <span>Total</span> <span>{valorTotal()}</span>
+              </PaymentTotal>
+              <Separator></Separator>
+              <LoginTitle>2. Login</LoginTitle>
+              <InputGroup>
+                <span>E-MAIL:</span>
+                <input
+                  type="text"
+                  value={email || ""}
+                  onChange={(e) => setEmail(e.currentTarget.value)}
+                />
+              </InputGroup>
+              <InputGroup>
+                <span>SENHA:</span>
+                <input
+                  type="password"
+                  value={password || ""}
+                  onChange={(e) => setPassword(e.currentTarget.value)}
+                />
+              </InputGroup>
+              <Button type="submit" onClick={handleSubmit}>
+                Entrar
+              </Button>
+            </ShoppingCartPayment>
+          </section>
+        </ShoppingCartContainer>
+      </Main>
+
+      <ToastContainer />
+    </>
   ) : (
-    <Main>
-      <Title>Sem Produto</Title>
-    </Main>
+    <>
+      <Main>
+        <Title>Sem Produto</Title>
+      </Main>
+    </>
   );
 }
 
