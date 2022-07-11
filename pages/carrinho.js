@@ -68,7 +68,8 @@ export default function Carrinho() {
    toast.success("Compra Finalizada com Sucesso", {
       position: "bottom-right",
       autoClose: 3000,
-    });mparStorage();
+    });
+    limparStorage();
     router.push("/conclusao");
   };
 
@@ -103,7 +104,7 @@ export default function Carrinho() {
   return produtos && produtos.length > 0 ? (
     <>
       <Main>
-        <Title>Tem Produto</Title>
+        <Title>Seu Carrinho</Title>
         <SubTitle>Produtos</SubTitle>
         <ShoppingCartContainer>
           <ShoppingCartProducts>
