@@ -1,6 +1,11 @@
-Link do repositório da api - https://github.com/Wellyngtonkuhn/Back-end-em-Node
+* Link do repositório da api - https://github.com/Wellyngtonkuhn/Back-end-em-Node
 
-Link para visualizar o site em produção - Em breve
+* Link para visualizar o site em produção - Em breve
+
+
+* Usuário para finalizar a compra.
+Email - admin@admin.com
+Password - admin
 
 
 
